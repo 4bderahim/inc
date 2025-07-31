@@ -1,5 +1,7 @@
 DOMAIN_NAME=yourlogin.42.fr
 
+
+MYSQL_HOST=mariadb
 # MariaDB
 MYSQL_ROOT_PASSWORD=supersecret
 MYSQL_DATABASE=wordpress
