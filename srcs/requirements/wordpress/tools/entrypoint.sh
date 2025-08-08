@@ -1,23 +1,22 @@
 #!/bin/bash
-#
-#
-# 1. Wait for MariaDB to become reachable
-echo " Waiting for MariaDB to be ready..."
-# while ! mysqladmin ping -h "$MYSQL_HOST" --silent; do
-#     sleep 1
-# done
-echo "done waiting .."
-
 
 set -e
 
-if [ ! -f wp-config.php ] && [ ! -d wp-includes ] ; then
+echo "Waiting for MariaDB to be ready..."
+echo "⏳ Waiting for MariaDB to become available..."
+until mysqladmin ping -h mariadb --silent; do
+    sleep 1
+done
+echo "✅ MariaDB is up."
+echo "MariaDB is up."
+
+if [ ! -f wp-config.php ]; then
     wp core download --allow-root
     wp config create \
         --dbname=$MYSQL_DATABASE \
         --dbuser=$MYSQL_USER \
         --dbpass=$MYSQL_PASSWORD \
-        --dbhost=mariadb \
+        --dbhost=$MYSQL_HOST \
         --allow-root
 
     wp core install \
@@ -33,11 +32,6 @@ if [ ! -f wp-config.php ] && [ ! -d wp-includes ] ; then
         --user_pass=$WP_USER_PASS \
         --role=author \
         --allow-root
-else
-	echo "wordpress already installed !!"
-
 fi
 
 php-fpm7.3 -F
-
-
